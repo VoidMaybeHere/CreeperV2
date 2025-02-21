@@ -2,5 +2,5 @@
 /discordFramework
 /__pycache__
 token.txt
-
+*.bak
 
