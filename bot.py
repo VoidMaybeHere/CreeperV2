@@ -1,10 +1,15 @@
 import discord
 import logging
+import pprint as p
 
 
 class Bot(discord.Client):
-    def on_ready():
-        pass
+    async def on_ready(self):
+        p.pprint("Bot Successfully Connected!\n Starting services")
+
+        
+    
+
 
 
 
@@ -16,4 +21,5 @@ intents.message_content = True
 bot = Bot(intents=intents)
 
 def run(token):
-    bot.run(token)
+    print("Attempting run")
+    bot.run(token=token)
