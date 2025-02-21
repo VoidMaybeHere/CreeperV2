@@ -26,6 +26,9 @@ else:                                                                           
     token = token.strip()
         
 
+
 def main(token):
     bot.run(token)
+
+main(token)
 
