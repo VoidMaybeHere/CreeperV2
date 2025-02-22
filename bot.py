@@ -1,5 +1,5 @@
 import discord
-import logging
+import logging, logging.handlers
 import pprint as p
 
 
@@ -7,7 +7,7 @@ import pprint as p
 
 logger = logging.getLogger('discord') #just copy log handler from discord.py docs
 logger.setLevel(logging.DEBUG)
-logging.getLogger('discord.http').setLevel(logging.INFO)
+logging.getLogger('discord.http').setLevel(logging.DEBUG)
 
 handler = logging.handlers.RotatingFileHandler(
     filename='discord.log',
@@ -20,12 +20,32 @@ formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', 
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+logger.info("Logger setup")
 
 
 
-class Bot(discord.Client):
-    async def on_ready(self):
-        p.pprint("Bot Successfully Connected!\n Starting services")
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = discord.Client(intents=intents)
+
+
+
+
+
+@bot.event    
+async def on_ready():
+    logger.info("Bot is Ready! Starting Services.")
+    
+
+
+'''@bot.listen('on_message')
+async def messageHandler(message):
+    pass'''
+
+    #Command Handler
+    
         
 
         
@@ -36,11 +56,8 @@ class Bot(discord.Client):
 
 
 
-intents = discord.Intents.default()
-intents.message_content = True
 
-bot = Bot(intents=intents)
 
 def run(token):
-    print("Attempting run")
+    logger.info("Attempting to start bot...")
     bot.run(token=token)
