@@ -1,6 +1,8 @@
-import discord
+import discord, discord.ext
 import logging, logging.handlers
 import pprint as p
+
+import discord.ext.commands
 
 
 
@@ -25,11 +27,10 @@ logger.info("Logger setup")
 
 
 
-intents = discord.Intents.default()
-intents.message_content = True
+intents = discord.Intents.all() ##FIXME: get regular intents working
 
-bot = discord.Client(intents=intents)
 
+bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
 
 
 
@@ -37,16 +38,28 @@ bot = discord.Client(intents=intents)
 @bot.event    
 async def on_ready():
     logger.info("Bot is Ready! Starting Services.")
+    await bot.tree.sync()
+    logger.info("Command Tree Synced")
     
 
 
-'''@bot.listen('on_message')
-async def messageHandler(message):
-    pass'''
+@bot.listen('on_message')
+async def messageHandler(message: discord.Message):
+    
+    if message.author == bot.user or message.author.bot == True: #check if message was sent by a bot or self
+        return None
+    p.pprint(message.content.lower())
+    if message.content.lower() == "creeper":
+        await message.reply("aw man")
 
     #Command Handler
-    
-        
+
+@bot.tree.command(name="test")
+@discord.app_commands.describe(arg1 = "Fuck you", arg2 = "Fuck you more")
+async def test(interact: discord.Interaction, arg1: int, arg2: str):
+    await interact.response.send_message(f"Test command, if you see this <@341767947309678603> fucked up. {arg1} : {arg2}")
+    logger.debug(f"Test command fired by {interact.user.name}")
+
 
         
     
