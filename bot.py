@@ -1,8 +1,13 @@
 import discord, discord.ext
+import discord.ext.commands
+#logging
 import logging, logging.handlers
 import pprint as p
+#CTRL + C Handling
+import signal
+import sys
 
-import discord.ext.commands
+
 
 
 
@@ -52,8 +57,12 @@ async def messageHandler(message: discord.Message):
     if message.content.lower() == "creeper":
         await message.reply("aw man")
 
-    #Command Handler
 
+
+
+
+
+#Command Handler
 @bot.tree.command(name="test")
 @discord.app_commands.describe(arg1 = "Fuck you", arg2 = "Fuck you more")
 async def test(interact: discord.Interaction, arg1: int, arg2: str):
@@ -74,3 +83,13 @@ async def test(interact: discord.Interaction, arg1: int, arg2: str):
 def run(token):
     logger.info("Attempting to start bot...")
     bot.run(token=token)
+
+
+async def stop(sig = None, frame = None):
+    
+    logger.critical("Stopping Gracefully")
+    logger.warning("Closing Bot Connection")
+    await bot.close()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, stop)
