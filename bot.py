@@ -7,7 +7,7 @@ import pprint as p
 import signal
 import sys
 
-
+stats = {None} #Empty dict for stats
 
 
 
@@ -55,6 +55,7 @@ async def messageHandler(message: discord.Message):
         return None
     p.pprint(message.content.lower())
     if message.content.lower() == "creeper":
+        incStat(message.author, message.guild, "creeper")
         await message.reply("aw man")
 
 
@@ -75,14 +76,22 @@ async def test(interact: discord.Interaction, arg1: int, arg2: str):
 
 
 
+def incStat(user: discord.User, guild: discord.Guild, stat: str):
+    if stats[guild.id][user.id] == None:
+        stats[guild.id][user.id] == 1
+    else:
+        stats[guild.id][user.id] =+ 1
 
 
 
 
 
-def run(token):
+def run(token, json):
     logger.info("Attempting to start bot...")
+    global stats
+    stats = json
     bot.run(token=token)
+
 
 
 async def stop(sig = None, frame = None):
@@ -90,6 +99,7 @@ async def stop(sig = None, frame = None):
     logger.critical("Stopping Gracefully")
     logger.warning("Closing Bot Connection")
     await bot.close()
+    logger.warning("Exiting Program")
     sys.exit(0)
 
 signal.signal(signal.SIGINT, stop)
