@@ -7,9 +7,9 @@ import pprint as p
 import signal
 import sys
 #Json parsing
-import json, main
+import json
 
-stats = {None} #Empty dict for stats
+stats = {} #Empty dict for stats
 
 
 
@@ -79,10 +79,23 @@ async def test(interact: discord.Interaction, arg1: int, arg2: str):
 
 
 def incStat(user: discord.User, guild: discord.Guild, stat: str):
-    if stats[guild.id][user.id][stat] == None:
-        stats[guild.id][user.id][stat] == 1
-    else:
-        stats[guild.id][user.id][stat] =+ 1
+    gid = f"{guild.id}"
+    uid = f"{user.id}"
+
+    try:
+        num = stats[gid][uid][stat]
+        p.pprint(num)
+    except KeyError:
+        stats[gid] = {uid: {stat: 0}} 
+        num = 0
+    num += 1
+    stats[gid] = {uid: {stat: num}} 
+    
+    
+
+
+
+    
 
 
 
@@ -92,16 +105,21 @@ def run(token, json):
     logger.info("Attempting to start bot...")
     global stats
     stats = json
-    bot.run(token=token)
+    bot.run(token=token, reconnect=True)
+
+def writeJson(stats: dict):
+    logger.info("Writing stats to json file")
+    with open("stats.json", "w+") as file:
+        file.truncate(0)
+        file.write(json.dumps(stats))
+        file.close()
 
 
 
-async def stop(sig = None, frame = None):
+def stop(sig = None, frame = None):
     
     logger.critical("Stopping Gracefully")
-    logger.warning("Closing Bot Connection")
-    await bot.close()
-    main.writeJson(stats, logger)
+    writeJson(stats)
     logger.warning("Exiting Program")
     sys.exit(0)
 
