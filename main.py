@@ -40,25 +40,22 @@ else:                                                                           
 def loadStats(statsFile):
     stat = json.load(statsFile)
     statsfile.close()
+    return stat
 
 def main(token: str, stats: dict):
     bot.run(token, stats)
 
-def writeJson(stats: str, logger: logging.Logger):
-    logger.info("Writing stats to json file")
-    with open("stats.json", "w") as file:
-        file.truncate(0)
-        file.write(stats)
-        file.close()
+
 
 
 
 
 if not os.path.exists("stats.json"):
     statsfile = open("stats.json", "x")
+    statsfile.close()
     main(token, {})
 else:
-    statsfile = open("stats.json", "w")
+    statsfile = open("stats.json", "r")
     main(token, loadStats(statsfile))
 
 
