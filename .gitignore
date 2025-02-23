@@ -7,3 +7,4 @@ token.txt
 pyvenv.cfg
 *.bak
 *.log
+stats.json
