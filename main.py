@@ -1,5 +1,9 @@
 import bot
 import argparse
+import sys, os
+import json
+import logging
+
 
 def fail(error):                                                                                                        #Error ""Handling""
     print(error)    
@@ -24,11 +28,37 @@ if args.t == None:
 else:                                                                                                                   #Format token string
     token = args.t
     token = token.strip()
-        
 
 
-def main(token):
-    bot.run(token)
 
-main(token)
+
+
+
+
+
+
+def loadStats(statsFile):
+    stat = json.load(statsFile)
+    statsfile.close()
+
+def main(token: str, stats: dict):
+    bot.run(token, stats)
+
+def writeJson(stats: str, logger: logging.Logger):
+    logger.info("Writing stats to json file")
+    with open("stats.json", "w") as file:
+        file.truncate(0)
+        file.write(stats)
+        file.close()
+
+
+
+
+if not os.path.exists("stats.json"):
+    statsfile = open("stats.json", "x")
+    main(token, {})
+else:
+    statsfile = open("stats.json", "w")
+    main(token, loadStats(statsfile))
+
 

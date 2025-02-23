@@ -6,6 +6,8 @@ import pprint as p
 #CTRL + C Handling
 import signal
 import sys
+#Json parsing
+import json, main
 
 stats = {None} #Empty dict for stats
 
@@ -77,10 +79,10 @@ async def test(interact: discord.Interaction, arg1: int, arg2: str):
 
 
 def incStat(user: discord.User, guild: discord.Guild, stat: str):
-    if stats[guild.id][user.id] == None:
-        stats[guild.id][user.id] == 1
+    if stats[guild.id][user.id][stat] == None:
+        stats[guild.id][user.id][stat] == 1
     else:
-        stats[guild.id][user.id] =+ 1
+        stats[guild.id][user.id][stat] =+ 1
 
 
 
@@ -99,6 +101,7 @@ async def stop(sig = None, frame = None):
     logger.critical("Stopping Gracefully")
     logger.warning("Closing Bot Connection")
     await bot.close()
+    main.writeJson(stats, logger)
     logger.warning("Exiting Program")
     sys.exit(0)
 
