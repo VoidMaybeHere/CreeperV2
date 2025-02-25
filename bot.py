@@ -1,22 +1,20 @@
 import discord, discord.ext
-import discord.ext.commands
+import discord.ext.commands, commandLibrary as c
 #logging
 import logging, logging.handlers
-import pprint as p
 #CTRL + C Handling
-import signal
-import sys
-#Json parsing
-import json
+import signal, sys
 
-stats = {} #Empty dict for stats
+
+
+
 
 
 
 
 logger = logging.getLogger('discord') #just copy log handler from discord.py docs
-logger.setLevel(logging.DEBUG)
-logging.getLogger('discord.http').setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
+logging.getLogger('discord.http').setLevel(logging.INFO)
 
 handler = logging.handlers.RotatingFileHandler(
     filename='discord.log',
@@ -55,9 +53,9 @@ async def messageHandler(message: discord.Message):
     
     if message.author == bot.user or message.author.bot == True: #check if message was sent by a bot or self
         return None
-    p.pprint(message.content.lower())
+    print(message.content)
     if message.content.lower() == "creeper":
-        incStat(message.author, message.guild, "creeper")
+        c.incStat(message.author, message.guild, "creeper")
         await message.reply("aw man")
 
 
@@ -72,30 +70,13 @@ async def test(interact: discord.Interaction, arg1: int, arg2: str):
     await interact.response.send_message(f"Test command, if you see this <@341767947309678603> fucked up. {arg1} : {arg2}")
     logger.debug(f"Test command fired by {interact.user.name}")
 
-
-        
-    
-
-
-
-def incStat(user: discord.User, guild: discord.Guild, stat: str):
-    gid = f"{guild.id}"
-    uid = f"{user.id}"
-
-    try:
-        num = stats[gid][uid][stat]
-        p.pprint(num)
-    except KeyError:
-        stats[gid] = {uid: {stat: 0}} 
-        num = 0
-    num += 1
-    stats[gid] = {uid: {stat: num}} 
-    
-    
+@bot.tree.command(name="stats")
+@discord.app_commands.describe(user = "Discord user", word = "Tracked word")
+async def getStats(ctx : discord.Interaction, user: discord.User, word: str):
+    word = word.lower()
+    await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
 
 
-
-    
 
 
 
@@ -103,24 +84,17 @@ def incStat(user: discord.User, guild: discord.Guild, stat: str):
 
 def run(token, json):
     logger.info("Attempting to start bot...")
-    global stats
-    stats = json
+    c.getStats(json)
     bot.run(token=token, reconnect=True)
 
-def writeJson(stats: dict):
-    logger.info("Writing stats to json file")
-    with open("stats.json", "w+") as file:
-        file.truncate(0)
-        file.write(json.dumps(stats))
-        file.close()
 
 
 
 def stop(sig = None, frame = None):
     
     logger.critical("Stopping Gracefully")
-    writeJson(stats)
+    c.writeJson(logger)
     logger.warning("Exiting Program")
     sys.exit(0)
 
-signal.signal(signal.SIGINT, stop)
+signal.signal(signal.SIGINT, stop) #CTRL + C Handler
