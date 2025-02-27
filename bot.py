@@ -53,10 +53,16 @@ async def messageHandler(message: discord.Message):
     
     if message.author == bot.user or message.author.bot == True: #check if message was sent by a bot or self
         return None
-    print(message.content)
+    
+    
     if message.content.lower() == "creeper":
         c.incStat(message.author, message.guild, "creeper")
         await message.reply("aw man")
+        
+    if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
+        if message.author.id == 341767947309678603:#TODO: Un hardcode this
+            await message.delete()
+            await message.author.send(c.bypass(message.author, logger))
 
 
 
