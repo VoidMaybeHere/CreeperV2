@@ -60,7 +60,7 @@ async def messageHandler(message: discord.Message):
         await message.reply("aw man")
         
     if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
-        if message.author.id == 341767947309678603:#TODO: Un hardcode this
+        if message.author.id == 341767947309678603: #TODO: Un hardcode this
             await message.delete()
             await message.author.send(c.bypass(message.author, logger))
 

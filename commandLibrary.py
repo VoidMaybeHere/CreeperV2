@@ -36,15 +36,27 @@ def writeJson(logger: logging.Logger):
         file.write(json.dumps(stats))
         file.close()
 def bypass(user: discord.Member, logger: logging.Logger):
+    rString = "Error bypassing "
+    error = False
     try:
         if user.voice.mute:
-            user.edit(mute=False)
+            user = user.edit(mute=False)
     except Exception as e:
+        error = True
         logger.error(f"Error bypassing mute: {e}")
+        rString += "mute"
     try:
         if user.voice.deaf:
             user.edit(deafen=False)
+            
     except Exception as e:
+        error = True
         logger.error(f"Error bypassing deafen: {e}")
+        if rString.endswith("mute"):
+            rString += "/deafen"
+    if error:
+        return rString
+    return "Success"
+    
     
         
