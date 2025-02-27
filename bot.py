@@ -58,11 +58,17 @@ async def messageHandler(message: discord.Message):
     if message.content.lower() == "creeper":
         c.incStat(message.author, message.guild, "creeper")
         await message.reply("aw man")
+        return
         
     if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
         if message.author.id == 341767947309678603: #TODO: Un hardcode this
             await message.delete()
             await message.author.send(c.bypass(message.author, logger))
+            return
+            
+    if c.isTrackedWord(message):
+        await message.reply(c.respondToWord(message))
+        return
 
 
 
@@ -81,6 +87,12 @@ async def test(interact: discord.Interaction, arg1: int, arg2: str):
 async def getStats(ctx : discord.Interaction, user: discord.User, word: str):
     word = word.lower()
     await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
+    
+@bot.tree.command(name="track")
+@discord.app_commands.describe(word = "Word to track", required = False)
+@discord.app_commands.describe(response = "Response to give, if any", required = False)
+async def addWord(ctx: discord.Interaction, word: str, response: str):
+    pass
 
 
 
