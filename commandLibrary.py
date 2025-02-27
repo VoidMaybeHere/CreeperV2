@@ -48,19 +48,19 @@ def saveStats():
         f.close()
     logger.info("Stats written to pickle file")
         
-def bypass(user: discord.Member):
+async def bypass(user: discord.Member):
     rString = "Error bypassing "
     error = False
     try:
         if user.voice.mute:
-            user = user.edit(mute=False)
+            user = await user.edit(mute=False)
     except Exception as e:
         error = True
         logger.error(f"Error bypassing mute: {e}")
         rString += "mute"
     try:
         if user.voice.deaf:
-            user.edit(deafen=False)
+           await user.edit(deafen=False)
             
     except Exception as e:
         error = True
