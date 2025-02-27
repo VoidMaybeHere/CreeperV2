@@ -94,7 +94,7 @@ async def getStats(ctx : discord.Interaction, user: discord.User, word: str):
 @discord.app_commands.describe(word = "Word to track")
 @discord.app_commands.describe(response = "Response to give, if any", required = False)
 async def addWord(ctx: discord.Interaction, word: str, response: str):
-    await ctx.response.send_message(c.trackWord(ctx,word,response,logger))
+    await ctx.response.send_message(c.trackWord(ctx,word,response,logger), ephemeral=True)
 
 
 
