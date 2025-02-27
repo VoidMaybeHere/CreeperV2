@@ -111,7 +111,7 @@ def run(token, json):
 def stop(sig = None, frame = None):
     
     logger.warning("Stopping Gracefully")
-    c.writeJson(logger)
+    c.saveStats(logger)
     logger.critical("Exiting Program")
     sys.exit(0)
 
