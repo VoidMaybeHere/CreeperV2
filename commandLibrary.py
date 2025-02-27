@@ -1,4 +1,4 @@
-import discord, pprint as p, logging, json
+import discord, pprint as p, logging, pickle
 
 
 stats = {}
@@ -25,16 +25,16 @@ def incStat(user: discord.User, guild: discord.Guild, word: str):
     p.pprint(num)
     stats[gid] = {uid: {word: num}} 
 
-def getStats(json):
+def getStats(pk1):
     global stats
-    stats = json
+    stats = pk1
 
-def writeJson(logger: logging.Logger):
-    logger.info("Writing stats to json file")
-    with open("stats.json", "w+") as file:
-        file.truncate(0)
-        file.write(json.dumps(stats))
-        file.close()
+def saveStats(logger: logging.Logger):
+    logger.info("Writing stats to pickle file")
+    with open("stats.pk1", "wb") as f:
+        pickle.dump(stats, f)
+        f.close()
+    logger.info("Stats written to pickle file")
         
 def bypass(user: discord.Member, logger: logging.Logger):
     rString = "Error bypassing "
@@ -86,9 +86,13 @@ def respondToWord(message: discord.Message):
     return response
     
 def isTrackedWord(message: discord.Message):
-    if any(message.content.lower().split()) in stats[f"{message.guild.id}"]["Words"]:
-        return True
-    return False
+    try:
+        if any(message.content.lower().split()) in stats[f"{message.guild.id}"]["Words"].keys():
+            return True
+    except KeyError as ke:
+        print(f"KeyError: {ke}")
+        return False
+    
                 
         
     
