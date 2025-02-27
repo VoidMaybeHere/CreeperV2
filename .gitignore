@@ -9,3 +9,4 @@ pyvenv.cfg
 *.log
 stats.json
 /.vscode
+*.in
