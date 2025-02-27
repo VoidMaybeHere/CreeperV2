@@ -21,9 +21,12 @@ if args.t == None:
         file.close()
         token = token[0]
         token = token.strip()
-    except FileExistsError: fail(FileExistsError)
-    except FileNotFoundError: fail(FileNotFoundError)
-    except IndexError: fail(IndexError)
+    except FileExistsError: 
+        open("token.txt", "x").close()
+        print("Token file created, please put your token in token.txt")
+        fail(FileExistsError)
+    except Exception as e:
+        fail(e)
 
 else:                                                                                                                   #Format token string
     token = args.t
