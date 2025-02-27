@@ -67,7 +67,9 @@ async def messageHandler(message: discord.Message):
             return
             
     if c.isTrackedWord(message):
-        await message.reply(c.respondToWord(message))
+        response = c.respondToWord(message)
+        if response != "":
+            await message.reply(response)
         return
 
 
