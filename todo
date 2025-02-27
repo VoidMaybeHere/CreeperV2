@@ -1,3 +1,8 @@
+Logic:
+    CRITICAL:
+        GETWORDS() - get the tracked words in a guild
+        
+
 Commands:
     Track - Track a new word
         Problems:
