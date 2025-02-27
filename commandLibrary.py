@@ -17,7 +17,7 @@ def incStat(user: discord.User, guild: discord.Guild, word: str):
     gid = f"{guild.id}"
     uid = f"{user.id}"
     try:
-        print(stats[gid][uid])
+        stats[gid][uid]
     except KeyError:
         stats[gid][uid] = {}
         logger.info(f"KeyError: {uid} not found in stats, creating empty dict")
@@ -31,7 +31,6 @@ def incStat(user: discord.User, guild: discord.Guild, word: str):
         logger.info(stats) 
         num = 0
     num += 1
-    p.pprint(num)
     stats[gid][uid][word] = num
 
 def getStats(pk1):
