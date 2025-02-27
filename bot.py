@@ -91,9 +91,8 @@ async def getStats(ctx : discord.Interaction, user: discord.User, word: str):
     await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
     
 @bot.tree.command(name="track")
-@discord.app_commands.describe(word = "Word to track")
-@discord.app_commands.describe(response = "Response to give, if any", required = False)
-async def addWord(ctx: discord.Interaction, word: str, response: str):
+@discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
+async def addWord(ctx: discord.Interaction, word: str, response: str=None):
     await ctx.response.send_message(c.trackWord(ctx,word,response,logger), ephemeral=True)
 
 
