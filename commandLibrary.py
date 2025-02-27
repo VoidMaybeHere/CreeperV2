@@ -62,6 +62,8 @@ def bypass(user: discord.Member, logger: logging.Logger):
 def trackWord(ctx: discord.Interaction, word: str, response: str, logger: logging.Logger):
     gid = ctx.guild.id
     word = word.lower()
+    if response == None:
+        response = ""
     
     try:
         stats[gid]["Words"][word] = response
@@ -69,6 +71,10 @@ def trackWord(ctx: discord.Interaction, word: str, response: str, logger: loggin
         stats[gid] = {"Words": {word: response}}
     except Exception as e:
         logger.error(f"Error tracking word: {e}")
+        return f"Error tracking word: {e}"
+    
+    logger.info(f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}")
+    return f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}"
         
 def respondToWord(message: discord.Message):
     response = ""
@@ -78,7 +84,7 @@ def respondToWord(message: discord.Message):
     return response
     
 def isTrackedWord(message: discord.Message):
-    if message.content.lower() in stats[f"{message.guild.id}"]["Words"]:
+    if any(message.content.lower().split()) in stats[f"{message.guild.id}"]["Words"]:
         return True
     return False
                 
