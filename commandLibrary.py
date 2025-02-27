@@ -78,9 +78,11 @@ def trackWord(ctx: discord.Interaction, word: str, response: str, logger: loggin
         
 def respondToWord(message: discord.Message):
     response = ""
-    for key in stats[f"{message.guild.id}"]["Words"]:
-        for key in message.content.lower():
-            response += stats[f"{message.guild.id}"]["Words"][key] + "\n"
+    for key in stats[f"{message.guild.id}"]["Words"]: #for every tracked word in the server
+        for key in message.content.lower(): #For every occurance of a tracked word in the message
+            if stats[f"{message.guild.id}"]["Words"][key] != "":
+                response += stats[f"{message.guild.id}"]["Words"][key] + "\n" #Add response on newline from dict
+            incStat(message.author, message.guild, key) #Add 1 to stat counter per word found in message
     return response
     
 def isTrackedWord(message: discord.Message):
