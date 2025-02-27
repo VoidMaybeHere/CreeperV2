@@ -2,6 +2,7 @@ import discord, pprint as p, logging, pickle
 
 
 stats = {}
+logger = None
 
 def getStat(guild: discord.Guild, user: discord.User, word: str):
     guild = f"{guild.id}"
@@ -15,28 +16,40 @@ def getStat(guild: discord.Guild, user: discord.User, word: str):
 def incStat(user: discord.User, guild: discord.Guild, word: str):
     gid = f"{guild.id}"
     uid = f"{user.id}"
-
+    try:
+        print(stats[gid][uid])
+    except KeyError:
+        stats[gid][uid] = {}
+        logger.info(f"KeyError: {uid} not found in stats, creating empty dict")
     try:
         num = stats[gid][uid][word]
-    except:
-        stats[gid] = {uid: {word: 0}} 
+    except Exception as e:
+        logger.info(f"Error getting stat: {word} due to {e} {e.__class__}")
+        logger.info(stats)
+
+        stats[gid][uid][word] = 0
+        logger.info(stats) 
         num = 0
     num += 1
     p.pprint(num)
-    stats[gid] = {uid: {word: num}} 
+    stats[gid][uid][word] = num
 
 def getStats(pk1):
     global stats
     stats = pk1
 
-def saveStats(logger: logging.Logger):
+def getLogger(tlogger: logging.Logger):
+    global logger
+    logger = tlogger
+
+def saveStats():
     logger.info("Writing stats to pickle file")
     with open("stats.pk1", "wb") as f:
         pickle.dump(stats, f)
         f.close()
     logger.info("Stats written to pickle file")
         
-def bypass(user: discord.Member, logger: logging.Logger):
+def bypass(user: discord.Member):
     rString = "Error bypassing "
     error = False
     try:
@@ -59,8 +72,8 @@ def bypass(user: discord.Member, logger: logging.Logger):
         return rString
     return "Success"
 
-def trackWord(ctx: discord.Interaction, word: str, response: str, logger: logging.Logger):
-    gid = ctx.guild.id
+def trackWord(ctx: discord.Interaction, word: str, response: str):
+    gid = f"{ctx.guild.id}"
     word = word.lower()
     if response == None:
         response = ""
@@ -77,21 +90,46 @@ def trackWord(ctx: discord.Interaction, word: str, response: str, logger: loggin
     return f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}"
         
 def respondToWord(message: discord.Message):
+    trackedWords = getTrackedWords(message.guild.id)
+    messageTextLowerList = message.content.lower().split()
+    if trackedWords == {}:
+        logger.debug(f"Tracked words dict is empty in server {message.guild.id}")
+        return ""
     response = ""
-    for key in stats[f"{message.guild.id}"]["Words"]: #for every tracked word in the server
-        for key in message.content.lower(): #For every occurance of a tracked word in the message
+    for key in trackedWords.keys(): #for every tracked word in the server
+        for word in messageTextLowerList: #For every occurance of a tracked word in the message
             if stats[f"{message.guild.id}"]["Words"][key] != "":
-                response += stats[f"{message.guild.id}"]["Words"][key] + "\n" #Add response on newline from dict
-            incStat(message.author, message.guild, key) #Add 1 to stat counter per word found in message
+
+                if word == key:
+                    response += stats[f"{message.guild.id}"]["Words"][key] + "\n" #Add response on newline from dict
+                    incStat(message.author, message.guild, key) #Add 1 to stat counter per word found in message
+
     return response
+
+def getTrackedWords(gid: int):
+    gid = f"{gid}"
+    try:
+        return stats[f"{gid}"]["Words"]
+    except KeyError:
+        logger.debug(f"KeyError: Words dict not found in gid {gid}")
+        stats[gid] = {"Words": {}}
+        return {}
+    except Exception as e:
+        logger.debug(f"Error getting tracked words: {e}")
+        return {}
     
 def isTrackedWord(message: discord.Message):
-    try:
-        if any(message.content.lower().split()) in stats[f"{message.guild.id}"]["Words"].keys():
-            return True
-    except KeyError as ke:
-        print(f"KeyError: {ke}")
+    trackedWords = getTrackedWords(message.guild.id)
+    if trackedWords == {}:
         return False
+    try:
+        for key in trackedWords.keys():
+            if key in message.content.lower().split():
+                return True
+    except KeyError as ke:
+        logger.debug(f"KeyError: {ke}")
+        return False
+    return False
     
                 
         

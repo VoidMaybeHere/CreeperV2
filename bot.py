@@ -28,6 +28,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 logger.info("Logger setup")
+c.getLogger(logger) #get logger into commandLibrary
 
 
 
@@ -63,7 +64,7 @@ async def messageHandler(message: discord.Message):
     if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
         if message.author.id == 341767947309678603: #TODO: Un hardcode this
             await message.delete()
-            await message.author.send(c.bypass(message.author, logger))
+            await message.author.send(c.bypass(message.author))
             return
             
     if c.isTrackedWord(message):
@@ -93,16 +94,16 @@ async def getStats(ctx : discord.Interaction, user: discord.User, word: str):
 @bot.tree.command(name="track")
 @discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
 async def addWord(ctx: discord.Interaction, word: str, response: str=None):
-    await ctx.response.send_message(c.trackWord(ctx,word,response,logger), ephemeral=True)
+    await ctx.response.send_message(c.trackWord(ctx,word,response), ephemeral=True)
 
 
 
 
 
 
-def run(token, json):
+def run(token, pk1):
     logger.info("Attempting to start bot...")
-    c.getStats(json)
+    c.getStats(pk1)
     bot.run(token=token, reconnect=True)
 
 
@@ -111,7 +112,7 @@ def run(token, json):
 def stop(sig = None, frame = None):
     
     logger.warning("Stopping Gracefully")
-    c.saveStats(logger)
+    c.saveStats()
     logger.critical("Exiting Program")
     sys.exit(0)
 
