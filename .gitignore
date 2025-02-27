@@ -10,3 +10,4 @@ pyvenv.cfg
 stats.json
 /.vscode
 *.in
+*.pk1
