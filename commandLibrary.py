@@ -87,6 +87,27 @@ def trackWord(ctx: discord.Interaction, word: str, response: str):
     
     logger.info(f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}")
     return f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}"
+
+def untrackWord(ctx: discord.Interaction, word: str):
+    gid = f"{ctx.guild.id}"
+    word = word.lower()
+    try:
+
+        for user in stats[gid].keys():
+            if user != "Words":
+                for key in user:
+                    key.pop(word)
+
+        del stats[gid]["Words"][word]
+    except KeyError as ke:
+        logger.info(f"KeyError: {word} not found in tracked words dict in server {gid}... {ke}")
+        return f"Word [{word}] not found in tracked words dict in server {gid}"
+    except Exception as e:
+        logger.error(f"Error untracking word: {e}")
+        return f"Error untracking word: {e}"
+    
+    logger.info(f"Word [{word}] removed from tracked words dict in server {gid}")
+    return f"Word [{word}] removed from tracked words dict in server {gid}"
         
 def respondToWord(message: discord.Message):
     trackedWords = getTrackedWords(message.guild.id)
