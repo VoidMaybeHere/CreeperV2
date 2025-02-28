@@ -79,22 +79,22 @@ async def messageHandler(message: discord.Message):
 
 
 #Command Handler
-@bot.tree.command(name="test")
-@discord.app_commands.describe(arg1 = "Fuck you", arg2 = "Fuck you more")
-async def test(interact: discord.Interaction, arg1: int, arg2: str):
-    await interact.response.send_message(f"Test command, if you see this <@341767947309678603> fucked up. {arg1} : {arg2}")
-    logger.debug(f"Test command fired by {interact.user.name}")
 
-@bot.tree.command(name="stats")
+@bot.tree.command(name="stats", description="Returns the stats of a specific user")
 @discord.app_commands.describe(user = "Discord user", word = "Tracked word")
 async def getStats(ctx : discord.Interaction, user: discord.User, word: str):
     word = word.lower()
     await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
     
-@bot.tree.command(name="track")
+@bot.tree.command(name="track", description="Track a word and gove a response")
 @discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
 async def addWord(ctx: discord.Interaction, word: str, response: str=None):
     await ctx.response.send_message(c.trackWord(ctx,word,response), ephemeral=True)
+
+@bot.tree.command(name="untrack", description="Untrack a word, if it exists")
+@discord.app_commands.describe(word = "Word to untrack")
+async def removeWord(ctx: discord.Interaction, word: str):
+    await ctx.response.send_message(c.untrackWord(ctx,word), ephemeral=True)
 
 
 
