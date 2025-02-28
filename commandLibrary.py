@@ -95,8 +95,11 @@ def untrackWord(ctx: discord.Interaction, word: str):
 
         for user in stats[gid].keys():
             if user != "Words":
-                for key in user:
-                    key.pop(word)
+                for trackedWord in stats[gid][user].keys():
+                    if trackedWord == word:
+                        del stats[gid][user][word]
+                        break
+                    
 
         del stats[gid]["Words"][word]
     except KeyError as ke:
