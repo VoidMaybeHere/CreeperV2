@@ -1,7 +1,5 @@
 import bot
 import argparse
-import os
-import json
 import pickle
 
 
