@@ -8,3 +8,8 @@ pyvenv.cfg
 *.bak
 *.log
 stats.json
+/.vscode
+*.in
+*.pk1
+
+
