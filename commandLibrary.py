@@ -32,8 +32,13 @@ def incStat(user: discord.User, guild: discord.Guild, word: str):
     try:
         stats[gid][uid]
     except KeyError:
-        stats[gid][uid] = {}
-        logger.info(f"KeyError: {uid} not found in stats, creating empty dict")
+        try:
+            stats[gid][uid] = {}
+            logger.info(f"KeyError: {uid} not found in stats, creating empty dict")
+        except KeyError:
+            stats[gid] = {uid: {}}
+            logger.info(f"KeyError: {gid} not found in stats, creating empty dict")
+        
     try:
         num = stats[gid][uid][word]
     except Exception as e:
