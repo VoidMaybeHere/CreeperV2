@@ -13,6 +13,19 @@ def getStat(guild: discord.Guild, user: discord.User, word: str):
         stat = 0
     return stat
 
+def getAllStats(guild: discord.Guild, user: discord.User):
+    guild = f"{guild.id}"
+    user = f"{user.id}"
+    userStatsString = ""
+    try:
+        userStats = stats[guild][user]
+        for key in userStats.keys():
+            userStatsString += f"{key}: {userStats[key]}\n"
+    except Exception as e:
+        logger.error(f"Error getting all stats: {e}")
+        userStatsString = "No stats found"
+    return userStatsString
+
 def incStat(user: discord.User, guild: discord.Guild, word: str):
     gid = f"{guild.id}"
     uid = f"{user.id}"

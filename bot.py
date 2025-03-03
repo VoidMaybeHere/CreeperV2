@@ -82,10 +82,14 @@ async def messageHandler(message: discord.Message):
 
 @bot.tree.command(name="stats", description="Returns the stats of a specific user")
 @discord.app_commands.describe(user = "Discord user", word = "Tracked word")
-async def getStats(ctx : discord.Interaction, user: discord.User, word: str):
+async def getStats(ctx : discord.Interaction, user: discord.User, word: str=None):
+    if word == None:
+        await ctx.response.send_message(c.getAllStats(ctx.guild, user), ephemeral=True)
+        return
     word = word.lower()
     await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
     
+
 @bot.tree.command(name="track", description="Track a word and gove a response")
 @discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
 async def addWord(ctx: discord.Interaction, word: str, response: str=None):
