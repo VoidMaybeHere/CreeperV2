@@ -33,7 +33,7 @@ def incStat(user: discord.User, guild: discord.Guild, word: str):
     num += 1
     stats[gid][uid][word] = num
 
-def getStats(pk1):
+def loadStats(pk1):
     global stats
     stats = pk1
 
