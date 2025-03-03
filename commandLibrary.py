@@ -134,11 +134,13 @@ def respondToWord(message: discord.Message):
     response = ""
     for key in trackedWords.keys(): #for every tracked word in the server
         for word in messageTextLowerList: #For every occurance of a tracked word in the message
-            if stats[f"{message.guild.id}"]["Words"][key] != "":
+            
 
                 if word == key:
-                    response += stats[f"{message.guild.id}"]["Words"][key] + "\n" #Add response on newline from dict
+                    if stats[f"{message.guild.id}"]["Words"][key] != "":
+                        response += stats[f"{message.guild.id}"]["Words"][key] + "\n" #Add response on newline from dict
                     incStat(message.author, message.guild, key) #Add 1 to stat counter per word found in message
+            
 
     return response
 
