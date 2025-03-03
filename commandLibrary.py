@@ -26,6 +26,30 @@ def getAllStats(guild: discord.Guild, user: discord.User):
         userStatsString = "No stats found"
     return userStatsString
 
+def getServerStats(guild: discord.Guild):
+    guild = f"{guild.id}"
+    serverStatsString = ""
+    try:
+        for user in stats[guild].keys():
+            if user != "Words":
+                userStatsString = f"<@{user}>:\n"
+                try:
+                    for key in stats[guild][user].keys():
+                        userStatsString += f"{key}: {stats[guild][user][key]}\n"
+                    serverStatsString += userStatsString
+                except:
+                    serverStatsString += f"<@{user}>: No stats found\n"
+    except KeyError as ke:
+        serverStatsString = "No Stats Recorded in Server."
+    except Exception as e:
+        logger.error(f"Error getting server stats: {e}")
+        serverStatsString = "Error getting server stats"
+
+    if serverStatsString == "" or serverStatsString == None:
+        logger.error(f"Server stats string is empty, \"{serverStatsString}\"")
+        serverStatsString = "No stats recorded in server and bot really fucked up"
+    return serverStatsString
+
 def incStat(user: discord.User, guild: discord.Guild, word: str):
     gid = f"{guild.id}"
     uid = f"{user.id}"
@@ -139,8 +163,6 @@ def respondToWord(message: discord.Message):
     response = ""
     for key in trackedWords.keys(): #for every tracked word in the server
         for word in messageTextLowerList: #For every occurance of a tracked word in the message
-            
-
                 if word == key:
                     if stats[f"{message.guild.id}"]["Words"][key] != "":
                         response += stats[f"{message.guild.id}"]["Words"][key] + "\n" #Add response on newline from dict
