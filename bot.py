@@ -33,7 +33,13 @@ c.getLogger(logger) #get logger into commandLibrary
 
 
 
-intents = discord.Intents.all() ##FIXME: get regular intents working
+intents = discord.Intents.none() 
+intents.message_content = True
+intents.voice_states = True
+intents.dm_reactions = True
+intents.dm_messages = True
+intents.guild_messages = True
+intents.guilds = True
 
 
 bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
@@ -60,15 +66,14 @@ async def messageHandler(message: discord.Message):
         reply = ""
         for word in message.content.lower().split():
             if word == "creeper":
-                reply =+ "aw man\n"
+                reply += "aw man\n"
         c.incStat(message.author, message.guild, "creeper")
         await message.reply(reply)
         return
         
     if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
         if message.author.id == 341767947309678603: #TODO: Un hardcode this
-            await message.delete()
-            await message.author.send(await c.bypass(message.author))
+            await message.author.send(await c.bypass(message))
             return
             
     if c.isTrackedWord(message):

@@ -90,7 +90,8 @@ def saveStats():
         f.close()
     logger.info("Stats written to pickle file")
         
-async def bypass(user: discord.Member):
+async def bypass(message: discord.Message):
+    user = message.author
     rString = "Error bypassing "
     error = False
     try:
@@ -111,6 +112,7 @@ async def bypass(user: discord.Member):
             rString += "/deafen"
     if error:
         return rString
+    await message.delete()
     return "Success"
 
 def trackWord(ctx: discord.Interaction, word: str, response: str):
