@@ -56,9 +56,13 @@ async def messageHandler(message: discord.Message):
         return None
     
     
-    if message.content.lower() == "creeper":
+    if "creeper" in message.content.lower():
+        reply = ""
+        for word in message.content.lower().split():
+            if word == "creeper":
+                reply =+ "aw man\n"
         c.incStat(message.author, message.guild, "creeper")
-        await message.reply("aw man")
+        await message.reply(reply)
         return
         
     if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
