@@ -13,14 +13,56 @@ def getStat(guild: discord.Guild, user: discord.User, word: str):
         stat = 0
     return stat
 
+def getAllStats(guild: discord.Guild, user: discord.User):
+    guild = f"{guild.id}"
+    user = f"{user.id}"
+    userStatsString = ""
+    try:
+        userStats = stats[guild][user]
+        for key in userStats.keys():
+            userStatsString += f"{key}: {userStats[key]}\n"
+    except Exception as e:
+        logger.error(f"Error getting all stats: {e}")
+        userStatsString = "No stats found"
+    return userStatsString
+
+def getServerStats(guild: discord.Guild):
+    guild = f"{guild.id}"
+    serverStatsString = ""
+    try:
+        for user in stats[guild].keys():
+            if user != "Words":
+                userStatsString = f"<@{user}>:\n"
+                try:
+                    for key in stats[guild][user].keys():
+                        userStatsString += f"{key}: {stats[guild][user][key]}\n"
+                    serverStatsString += userStatsString
+                except:
+                    serverStatsString += f"<@{user}>: No stats found\n"
+    except KeyError as ke:
+        serverStatsString = "No Stats Recorded in Server."
+    except Exception as e:
+        logger.error(f"Error getting server stats: {e}")
+        serverStatsString = "Error getting server stats"
+
+    if serverStatsString == "" or serverStatsString == None:
+        logger.error(f"Server stats string is empty, \"{serverStatsString}\"")
+        serverStatsString = "No stats recorded in server and bot really fucked up"
+    return serverStatsString
+
 def incStat(user: discord.User, guild: discord.Guild, word: str):
     gid = f"{guild.id}"
     uid = f"{user.id}"
     try:
         stats[gid][uid]
     except KeyError:
-        stats[gid][uid] = {}
-        logger.info(f"KeyError: {uid} not found in stats, creating empty dict")
+        try:
+            stats[gid][uid] = {}
+            logger.info(f"KeyError: {uid} not found in stats, creating empty dict")
+        except KeyError:
+            stats[gid] = {uid: {}}
+            logger.info(f"KeyError: {gid} not found in stats, creating empty dict")
+        
     try:
         num = stats[gid][uid][word]
     except Exception as e:
@@ -33,7 +75,7 @@ def incStat(user: discord.User, guild: discord.Guild, word: str):
     num += 1
     stats[gid][uid][word] = num
 
-def getStats(pk1):
+def loadStats(pk1):
     global stats
     stats = pk1
 
@@ -121,11 +163,11 @@ def respondToWord(message: discord.Message):
     response = ""
     for key in trackedWords.keys(): #for every tracked word in the server
         for word in messageTextLowerList: #For every occurance of a tracked word in the message
-            if stats[f"{message.guild.id}"]["Words"][key] != "":
-
                 if word == key:
-                    response += stats[f"{message.guild.id}"]["Words"][key] + "\n" #Add response on newline from dict
+                    if stats[f"{message.guild.id}"]["Words"][key] != "":
+                        response += stats[f"{message.guild.id}"]["Words"][key] + "\n" #Add response on newline from dict
                     incStat(message.author, message.guild, key) #Add 1 to stat counter per word found in message
+            
 
     return response
 
