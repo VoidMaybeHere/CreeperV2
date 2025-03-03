@@ -69,7 +69,7 @@ async def messageHandler(message: discord.Message):
             
     if c.isTrackedWord(message):
         response = c.respondToWord(message)
-        if response != "":
+        if response != "" and response != None:
             await message.reply(response)
         return
 
@@ -82,7 +82,10 @@ async def messageHandler(message: discord.Message):
 
 @bot.tree.command(name="stats", description="Returns the stats of a specific user")
 @discord.app_commands.describe(user = "Discord user", word = "Tracked word")
-async def getStats(ctx : discord.Interaction, user: discord.User, word: str=None):
+async def getStats(ctx : discord.Interaction, user: discord.User=None, word: str=None):
+    if user == None:
+        await ctx.response.send_message(c.getServerStats(ctx.guild), ephemeral=True)
+        return
     if word == None:
         await ctx.response.send_message(c.getAllStats(ctx.guild, user), ephemeral=True)
         return
