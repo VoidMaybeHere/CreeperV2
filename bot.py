@@ -56,9 +56,13 @@ async def messageHandler(message: discord.Message):
         return None
     
     
-    if message.content.lower() == "creeper":
+    if "creeper" in message.content.lower():
+        reply = ""
+        for word in message.content.lower().split():
+            if word == "creeper":
+                reply =+ "aw man\n"
         c.incStat(message.author, message.guild, "creeper")
-        await message.reply("aw man")
+        await message.reply(reply)
         return
         
     if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
@@ -69,7 +73,7 @@ async def messageHandler(message: discord.Message):
             
     if c.isTrackedWord(message):
         response = c.respondToWord(message)
-        if response != "":
+        if response != "" and response != None:
             await message.reply(response)
         return
 
@@ -82,10 +86,17 @@ async def messageHandler(message: discord.Message):
 
 @bot.tree.command(name="stats", description="Returns the stats of a specific user")
 @discord.app_commands.describe(user = "Discord user", word = "Tracked word")
-async def getStats(ctx : discord.Interaction, user: discord.User, word: str):
+async def getStats(ctx : discord.Interaction, user: discord.User=None, word: str=None):
+    if user == None:
+        await ctx.response.send_message(c.getServerStats(ctx.guild), ephemeral=True)
+        return
+    if word == None:
+        await ctx.response.send_message(c.getAllStats(ctx.guild, user), ephemeral=True)
+        return
     word = word.lower()
     await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
     
+
 @bot.tree.command(name="track", description="Track a word and gove a response")
 @discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
 async def addWord(ctx: discord.Interaction, word: str, response: str=None):
@@ -103,7 +114,7 @@ async def removeWord(ctx: discord.Interaction, word: str):
 
 def run(token, pk1):
     logger.info("Attempting to start bot...")
-    c.getStats(pk1)
+    c.loadStats(pk1)
     bot.run(token=token, reconnect=True)
 
 
