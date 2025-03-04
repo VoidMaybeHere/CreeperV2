@@ -1,5 +1,6 @@
 import discord, discord.ext
 import discord.ext.commands, commandLibrary as c
+from  discord.ext.commands import has_permissions
 #logging
 import logging, logging.handlers
 #CTRL + C Handling
@@ -103,11 +104,13 @@ async def getStats(ctx : discord.Interaction, user: discord.User=None, word: str
     
 
 @bot.tree.command(name="track", description="Track a word and gove a response")
+@has_permissions(manage_guild=True)
 @discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
 async def addWord(ctx: discord.Interaction, word: str, response: str=None):
     await ctx.response.send_message(c.trackWord(ctx,word,response), ephemeral=True)
 
 @bot.tree.command(name="untrack", description="Untrack a word, if it exists")
+@has_permissions(manage_guild=True)
 @discord.app_commands.describe(word = "Word to untrack")
 async def removeWord(ctx: discord.Interaction, word: str):
     await ctx.response.send_message(c.untrackWord(ctx,word), ephemeral=True)
