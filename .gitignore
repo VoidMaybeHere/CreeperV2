@@ -6,6 +6,7 @@
 token.txt
 pyvenv.cfg
 *.bak
+*.log.*
 *.log
 stats.json
 /.vscode
