@@ -4,7 +4,7 @@ import discord, pprint as p, logging, pickle
 stats = {}
 logger = None
 
-def getStat(guild: discord.Guild, user: discord.User, word: str):
+def getStat(guild: discord.Guild, user: discord.User, word: str): # Get a specific stat for a user in a server
     guild = f"{guild.id}"
     user = f"{user.id}"
     try:
@@ -13,7 +13,7 @@ def getStat(guild: discord.Guild, user: discord.User, word: str):
         stat = 0
     return stat
 
-def getAllStats(guild: discord.Guild, user: discord.User):
+def getAllStats(guild: discord.Guild, user: discord.User): # Get all stats for a user in a server
     guild = f"{guild.id}"
     user = f"{user.id}"
     userStatsString = ""
@@ -26,7 +26,7 @@ def getAllStats(guild: discord.Guild, user: discord.User):
         userStatsString = "No stats found"
     return userStatsString
 
-def getServerStats(guild: discord.Guild):
+def getServerStats(guild: discord.Guild):# Get combined stats for all users in a server
     guild = f"{guild.id}"
     serverStatsString = ""
     try:
@@ -50,7 +50,7 @@ def getServerStats(guild: discord.Guild):
         serverStatsString = "No stats recorded in server and bot really fucked up"
     return serverStatsString
 
-def incStat(user: discord.User, guild: discord.Guild, word: str):
+def incStat(user: discord.User, guild: discord.Guild, word: str): # Increase a specific stat by 1 and create it in a users stats if it does not exist
     gid = f"{guild.id}"
     uid = f"{user.id}"
     try:
@@ -75,22 +75,22 @@ def incStat(user: discord.User, guild: discord.Guild, word: str):
     num += 1
     stats[gid][uid][word] = num
 
-def loadStats(pk1):
+def loadStats(pk1): # Transfer stats from bot.py to commandLibrary.py
     global stats
     stats = pk1
 
-def getLogger(tlogger: logging.Logger):
+def getLogger(tlogger: logging.Logger): # Get same logger from bot.py 
     global logger
     logger = tlogger
 
-def saveStats():
+def saveStats(): # Save stats to stats.pk1
     logger.info("Writing stats to pickle file")
     with open("stats.pk1", "wb") as f:
         pickle.dump(stats, f)
         f.close()
     logger.info("Stats written to pickle file")
         
-async def bypass(message: discord.Message):
+async def bypass(message: discord.Message): # Bypass mute/deafen and return a string 
     user = message.author
     rString = "Error bypassing "
     error = False
@@ -115,7 +115,7 @@ async def bypass(message: discord.Message):
     await message.delete()
     return "Success"
 
-def trackWord(ctx: discord.Interaction, word: str, response: str):
+def trackWord(ctx: discord.Interaction, word: str, response: str): # Add word and response to tracked words dict (Stats)
     gid = f"{ctx.guild.id}"
     word = word.lower()
     if response == None:
@@ -132,7 +132,7 @@ def trackWord(ctx: discord.Interaction, word: str, response: str):
     logger.info(f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}")
     return f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}"
 
-def untrackWord(ctx: discord.Interaction, word: str):
+def untrackWord(ctx: discord.Interaction, word: str): # Remove word from tracked words dict (Stats)
     gid = f"{ctx.guild.id}"
     word = word.lower()
     try:
@@ -156,7 +156,7 @@ def untrackWord(ctx: discord.Interaction, word: str):
     logger.info(f"Word [{word}] removed from tracked words dict in server {gid}")
     return f"Word [{word}] removed from tracked words dict in server {gid}"
         
-def respondToWord(message: discord.Message):
+def respondToWord(message: discord.Message): # Find a tracked word in a message and return the response if there is one in stats
     trackedWords = getTrackedWords(message.guild.id)
     messageTextLowerList = message.content.lower().split()
     if trackedWords == {}:
@@ -173,7 +173,7 @@ def respondToWord(message: discord.Message):
 
     return response
 
-def getTrackedWords(gid: int):
+def getTrackedWords(gid: int): # Get the words from the "Words" entry from stats[GuildID]
     gid = f"{gid}"
     try:
         return stats[f"{gid}"]["Words"]
@@ -185,7 +185,7 @@ def getTrackedWords(gid: int):
         logger.debug(f"Error getting tracked words: {e}")
         return {}
     
-def isTrackedWord(message: discord.Message):
+def isTrackedWord(message: discord.Message): # Check if a message contains a tracked word
     trackedWords = getTrackedWords(message.guild.id)
     if trackedWords == {}:
         return False
