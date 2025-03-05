@@ -120,6 +120,7 @@ async def removeWord(ctx: discord.Interaction, word: str):
 
 
 def run(token, pk1):
+    handler.doRollover()
     logger.info("Attempting to start bot...")
     c.loadStats(pk1)
     bot.run(token=token, reconnect=True)
