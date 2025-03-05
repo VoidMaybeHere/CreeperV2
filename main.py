@@ -8,8 +8,6 @@ def fail(error):                                                                
     print(error)    
     raise RuntimeError                                                                                          
     
-
-
 def getTokenFromFile():                                                                                                         #Get token from token.txt
     try:
         file = open("token.txt", "r") 
@@ -25,7 +23,6 @@ def getTokenFromFile():                                                         
     except Exception as e:
         fail(e)
         
-
 def loadStats(file:str="stats.pk1"):
     try:
         with open(file, "rb") as f:

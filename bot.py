@@ -33,7 +33,13 @@ c.getLogger(logger) #get logger into commandLibrary
 
 
 
-intents = discord.Intents.all() ##FIXME: get regular intents working
+intents = discord.Intents.none() 
+intents.message_content = True
+intents.voice_states = True
+intents.dm_reactions = True
+intents.dm_messages = True
+intents.guild_messages = True
+intents.guilds = True
 
 
 bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
@@ -43,9 +49,10 @@ bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
 
 @bot.event    
 async def on_ready():
-    logger.info("Bot is Ready! Starting Services.")
     await bot.tree.sync()
     logger.info("Command Tree Synced")
+    logger.info("Bot is Ready! Starting Services.")
+    
     
 
 
@@ -60,15 +67,14 @@ async def messageHandler(message: discord.Message):
         reply = ""
         for word in message.content.lower().split():
             if word == "creeper":
-                reply =+ "aw man\n"
+                reply += "aw man\n"
         c.incStat(message.author, message.guild, "creeper")
         await message.reply(reply)
         return
         
     if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
-        if message.author.id == 341767947309678603: #TODO: Un hardcode this
-            await message.delete()
-            await message.author.send(await c.bypass(message.author))
+        if message.author.id == 341767947309678603: #my id
+            await message.author.send(await c.bypass(message))
             return
             
     if c.isTrackedWord(message):
@@ -96,13 +102,14 @@ async def getStats(ctx : discord.Interaction, user: discord.User=None, word: str
     word = word.lower()
     await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
     
-
 @bot.tree.command(name="track", description="Track a word and gove a response")
+@discord.ext.commands.has_permissions(manage_guild=True)
 @discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
 async def addWord(ctx: discord.Interaction, word: str, response: str=None):
     await ctx.response.send_message(c.trackWord(ctx,word,response), ephemeral=True)
 
 @bot.tree.command(name="untrack", description="Untrack a word, if it exists")
+@discord.ext.commands.has_permissions(manage_guild=True)
 @discord.app_commands.describe(word = "Word to untrack")
 async def removeWord(ctx: discord.Interaction, word: str):
     await ctx.response.send_message(c.untrackWord(ctx,word), ephemeral=True)
@@ -113,6 +120,7 @@ async def removeWord(ctx: discord.Interaction, word: str):
 
 
 def run(token, pk1):
+    handler.doRollover()
     logger.info("Attempting to start bot...")
     c.loadStats(pk1)
     bot.run(token=token, reconnect=True)
