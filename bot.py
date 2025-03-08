@@ -53,6 +53,7 @@ async def on_ready():
     await bot.tree.sync()
     logger.info("Command Tree Synced")
     logger.info("Bot is Ready! Starting Services.")
+    await bot.change_presence(activity=discord.CustomActivity(name="aw man"))
     
     
 
