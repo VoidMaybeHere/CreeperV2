@@ -3,7 +3,7 @@ import discord.ext.commands, commandLibrary as c
 #logging
 import logging, logging.handlers
 #CTRL + C Handling
-import signal, sys
+import signal, sys, os
 
 
 
@@ -49,6 +49,7 @@ bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
 
 @bot.event    
 async def on_ready():
+    logger.info("Current pid: " + str(os.getpid()))
     await bot.tree.sync()
     logger.info("Command Tree Synced")
     logger.info("Bot is Ready! Starting Services.")
@@ -119,9 +120,12 @@ async def removeWord(ctx: discord.Interaction, word: str): # Removes a word from
 
 
 
-def run(token, pk1):
+def run(token, pk1, docker: bool=False):
+
     handler.doRollover()
     logger.info("Attempting to start bot...")
+    c.docker = docker
+    c.inDocker(docker)
     c.loadStats(pk1)
     bot.run(token=token, reconnect=True)
 
@@ -136,3 +140,4 @@ def stop(sig = None, frame = None):
     sys.exit(0)
 
 signal.signal(signal.SIGINT, stop) #CTRL + C Handler
+signal.signal(signal.SIGTERM, stop) #SIGTERM Handler
