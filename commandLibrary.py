@@ -1,8 +1,16 @@
-import discord, pprint as p, logging, pickle
+import discord, logging, pickle 
+from pathlib import Path
+
 
 
 stats = {}
 logger = None
+docker = False
+dockerPath = "./data/"
+
+def inDocker(tDocker: bool): # Set docker variable to true if running in docker
+    global docker
+    docker = tDocker
 
 def getStat(guild: discord.Guild, user: discord.User, word: str): # Get a specific stat for a user in a server
     guild = f"{guild.id}"
@@ -40,6 +48,7 @@ def getServerStats(guild: discord.Guild):# Get combined stats for all users in a
                 except:
                     serverStatsString += f"<@{user}>: No stats found\n"
     except KeyError as ke:
+        logger.info(f"KeyError: {ke}")
         serverStatsString = "No Stats Recorded in Server."
     except Exception as e:
         logger.error(f"Error getting server stats: {e}")
@@ -84,9 +93,16 @@ def getLogger(tlogger: logging.Logger): # Get same logger from bot.py
     logger = tlogger
 
 def saveStats(): # Save stats to stats.pk1
-    logger.info("Writing stats to pickle file")
-    with open("stats.pk1", "wb") as f:
+    if docker:
+        file = "./data/stats.pk1"
+        Path(dockerPath).mkdir(parents=True, exist_ok=True)
+    
+    else:
+        file = "stats.pk1"
+    logger.info(f"Writing stats to pickle file at {file}")
+    with open(file, "wb") as f:
         pickle.dump(stats, f)
+        logger.info(stats)
         f.close()
     logger.info("Stats written to pickle file")
         
