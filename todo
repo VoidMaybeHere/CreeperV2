@@ -1,0 +1,17 @@
+1. Modularize the codebas
+    - Message handler
+    - File handler
+    - Memory Handler
+
+
+Message Handler:
+    Learn async
+    Bypass here?
+
+File Handler:
+    Global stat here?
+    Make super class for stats?
+    Memory Handler:
+        All Stat functions on top of pk1?
+        Global Stat counter?
+    
