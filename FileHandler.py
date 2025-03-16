@@ -7,9 +7,7 @@ from pathlib import Path
 class pkFileHandler:
     
     def __init__(self, fileName="stats.pk1", logFileName = "FileHandler.log", docker: bool=False):
-        fileName = "stats.pk1" if None else fileName
-        logFileName = "FileHandler.log" if None else fileName
-        if docker:
+        if not docker:
             self._dataFile = "./data/"+fileName
             self._logFile = "./log/"+logFileName
             
@@ -68,11 +66,11 @@ class pkFileHandler:
         
 
     def _generateLogger(self):
-        fLog = logging.getLogger("File Handler")
-        fLog.addHandler(logging.StreamHandler())
-        fLog.addHandler(logging.FileHandler(filename=self._logFile, mode="a", encoding="utf-8"))
-        fLog.setLevel(logging.INFO)
-        fLog.info("Class Initalized")
-        self._logger = fLog
+        Log = logging.getLogger("File Handler")
+        Log.addHandler(logging.StreamHandler())
+        Log.addHandler(logging.FileHandler(filename=self._logFile, mode="a", encoding="utf-8"))
+        Log.setLevel(logging.INFO)
+        Log.info("Logger Initalized")
+        self._logger = Log
             
         
