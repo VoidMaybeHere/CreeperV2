@@ -24,13 +24,14 @@ class pkFileHandler:
         self._logger.debug(self._data)
         
     def load(self):
-        if self._data == None:
-            return {}
         return self._data
         
     def save(self, newData):
         if self._data == newData:
             return
+        self._saveData(newData)
+
+    def _saveData(self, newData):
         try: 
             with open(self._dataFile, "wb") as file:
                 pk.dump(newData, file)
