@@ -12,16 +12,16 @@ def inDocker(tDocker: bool): # Set docker variable to true if running in docker
     global docker
     docker = tDocker
 
-def getStat(guild: discord.Guild, user: discord.User, word: str): # Get a specific stat for a user in a server
+'''def getStat(guild: discord.Guild, user: discord.User, word: str): # Get a specific stat for a user in a server
     guild = f"{guild.id}"
     user = f"{user.id}"
     try:
         stat = stats[guild][user][word]
     except: 
         stat = 0
-    return stat
+    return stat'''
 
-def getAllStats(guild: discord.Guild, user: discord.User): # Get all stats for a user in a server
+'''def getAllStats(guild: discord.Guild, user: discord.User): # Get all stats for a user in a server
     guild = f"{guild.id}"
     user = f"{user.id}"
     userStatsString = ""
@@ -32,9 +32,9 @@ def getAllStats(guild: discord.Guild, user: discord.User): # Get all stats for a
     except Exception as e:
         logger.error(f"Error getting all stats: {e}")
         userStatsString = "No stats found"
-    return userStatsString
+    return userStatsString'''
 
-def getServerStats(guild: discord.Guild):# Get combined stats for all users in a server
+'''def getServerStats(guild: discord.Guild):# Get combined stats for all users in a server
     guild = f"{guild.id}"
     serverStatsString = ""
     try:
@@ -57,42 +57,19 @@ def getServerStats(guild: discord.Guild):# Get combined stats for all users in a
     if serverStatsString == "" or serverStatsString == None:
         logger.error(f"Server stats string is empty, \"{serverStatsString}\"")
         serverStatsString = "No stats recorded in server and bot really fucked up"
-    return serverStatsString
+    return serverStatsString'''
 
-def incStat(user: discord.User, guild: discord.Guild, word: str): # Increase a specific stat by 1 and create it in a users stats if it does not exist
-    gid = f"{guild.id}"
-    uid = f"{user.id}"
-    try:
-        stats[gid][uid]
-    except KeyError:
-        try:
-            stats[gid][uid] = {}
-            logger.info(f"KeyError: {uid} not found in stats, creating empty dict")
-        except KeyError:
-            stats[gid] = {uid: {}}
-            logger.info(f"KeyError: {gid} not found in stats, creating empty dict")
-        
-    try:
-        num = stats[gid][uid][word]
-    except Exception as e:
-        logger.info(f"Error getting stat: {word} due to {e} {e.__class__}")
-        logger.info(stats)
 
-        stats[gid][uid][word] = 0
-        logger.info(stats) 
-        num = 0
-    num += 1
-    stats[gid][uid][word] = num
 
-def loadStats(pk1): # Transfer stats from bot.py to commandLibrary.py
+'''def loadStats(pk1): # Transfer stats from bot.py to commandLibrary.py
     global stats
-    stats = pk1
+    stats = pk1'''
 
-def getLogger(tlogger: logging.Logger): # Get same logger from bot.py 
+'''def getLogger(tlogger: logging.Logger): # Get same logger from bot.py 
     global logger
-    logger = tlogger
+    logger = tlogger'''
 
-def saveStats(): # Save stats to stats.pk1
+'''def saveStats(): # Save stats to stats.pk1
     if docker:
         file = "./data/stats.pk1"
         Path(dockerPath).mkdir(parents=True, exist_ok=True)
@@ -104,7 +81,7 @@ def saveStats(): # Save stats to stats.pk1
         pickle.dump(stats, f)
         logger.info(stats)
         f.close()
-    logger.info("Stats written to pickle file")
+    logger.info("Stats written to pickle file")'''
         
 async def bypass(message: discord.Message): # Bypass mute/deafen and return a string 
     user = message.author
