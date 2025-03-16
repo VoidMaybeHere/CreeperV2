@@ -7,6 +7,8 @@ from pathlib import Path
 class pkFileHandler:
     
     def __init__(self, fileName="stats.pk1", logFileName = "FileHandler.log", docker: bool=False):
+        fileName = "stats.pk1" if None else fileName
+        logFileName = "FileHandler.log" if None else fileName
         if docker:
             self._dataFile = "./data/"+fileName
             self._logFile = "./log/"+logFileName
