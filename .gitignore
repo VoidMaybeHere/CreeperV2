@@ -2,6 +2,7 @@
 /Include
 /Lib
 /data
+/log
 /Scripts
 /__pycache__
 token.txt
