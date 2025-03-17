@@ -18,8 +18,8 @@ class pkFileHandler:
             self._logFile = "/data/log/"+logFileName
             Path("/data/log").mkdir(parents=True, exist_ok=True)
             
-        self._generateLogger(self)
-        self._loadData(self)
+        self._generateLogger()
+        self._loadData()
         self._logger.info("File Handler succesfully got data")
         self._logger.debug(self._data)
         
@@ -69,7 +69,7 @@ class pkFileHandler:
     def _generateLogger(self):
         Log = logging.getLogger("File Handler")
         Log.addHandler(logging.StreamHandler())
-        Log.addHandler(logging.FileHandler(filename=self._logFile, mode="a", encoding="utf-8"))
+        Log.addHandler(logging.FileHandler(filename=self._logFile, mode="a", encoding="utf-8").setFormatter(formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')))
         Log.setLevel(logging.INFO)
         Log.info("Logger Initalized")
         self._logger = Log

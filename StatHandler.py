@@ -90,13 +90,27 @@ class StatHandler:
             num = 0
         num += 1
         self.stats[gid][uid][word] = num
+
+    
+    
+    def getTrackedWords(self, gid: int): # Get the words from the "Words" entry from stats[GuildID]
+        gid = f"{gid}"
+        try:
+            return self.stats[f"{gid}"]["Words"]
+        except KeyError:
+            self._logger.debug(f"KeyError: Words dict not found in gid {gid}")
+            self.stats[gid] = {"Words": {}}
+            return {"Words": {}}
+        except Exception as e:
+            self._logger.debug(f"Error getting tracked words: {e}")
+            return {"Words": {}}
         
     
         
     def _generateLogger(self):
         Log = logging.getLogger("Stat Handler")
         Log.addHandler(logging.StreamHandler())
-        Log.addHandler(logging.FileHandler(filename=self._logFile, mode="a", encoding="utf-8"))
+        Log.addHandler(logging.FileHandler(filename=self._logFile, mode="a", encoding="utf-8").setFormatter(formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')))
         Log.setLevel(logging.INFO)
         Log.info("Logger Initalized")
         self._logger = Log

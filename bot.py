@@ -1,5 +1,7 @@
 import discord, discord.ext
 import discord.ext.commands, commandLibrary as c
+from MessageHandler import MessageHandler
+from StatHandler import StatHandler
 #logging
 import logging, logging.handlers
 #CTRL + C Handling
@@ -28,7 +30,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 logger.info("Logger setup")
-c.getLogger(logger) #get logger into commandLibrary
+#c.getLogger(logger) #get logger into commandLibrary
 
 
 
@@ -44,7 +46,8 @@ intents.guilds = True
 
 bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
 
-
+stats = StatHandler()
+messages = MessageHandler(stats)
 
 
 @bot.event    
@@ -53,7 +56,9 @@ async def on_ready():
     await bot.tree.sync()
     logger.info("Command Tree Synced")
     logger.info("Bot is Ready! Starting Services.")
+    
     await bot.change_presence(activity=discord.CustomActivity(name="aw man"))
+
     
     
 
@@ -70,20 +75,19 @@ async def messageHandler(message: discord.Message):
         for word in message.content.lower().split():
             if word == "creeper":
                 reply += "aw man\n"
-        c.incStat(message.author, message.guild, "creeper")
+        #c.incStat(message.author, message.guild, "creeper")
         await message.reply(reply)
         return
         
     if message.content.lower() == "by the will of allah i shall surpass the mute" or message.content.lower() == "by the will of allah i shall surpass the deafen":
         if message.author.id == 341767947309678603: #my id
-            await message.author.send(await c.bypass(message))
+            #await message.author.send(await #c.bypass(message))
             return
             
-    if c.isTrackedWord(message):
-        response = c.respondToWord(message)
-        if response != "" and response != None:
-            await message.reply(response)
-        return
+    reply = messages.containsTrackedWord(message)
+    if reply != False:
+        await message.reply(reply)
+
 
 
 
@@ -96,25 +100,27 @@ async def messageHandler(message: discord.Message):
 @discord.app_commands.describe(user = "Discord user", word = "Tracked word")
 async def getStats(ctx : discord.Interaction, user: discord.User=None, word: str=None): # Gets the stats of a user for s specific word, all words for a user, or all stats for a server
     if user == None:
-        await ctx.response.send_message(c.getServerStats(ctx.guild), ephemeral=True)
+        #await ctx.response.send_message(#c.getServerStats(ctx.guild), ephemeral=True)
         return
     if word == None:
-        await ctx.response.send_message(c.getAllStats(ctx.guild, user), ephemeral=True)
+        #await ctx.response.send_message(#c.getAllStats(ctx.guild, user), ephemeral=True)
         return
     word = word.lower()
-    await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
+    #await ctx.response.send_message(f"{user.mention} has said {word} {#c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
     
 @bot.tree.command(name="track", description="Track a word and gove a response")
 @discord.ext.commands.has_permissions(manage_guild=True)
 @discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
 async def addWord(ctx: discord.Interaction, word: str, response: str=None): # Adds a word to the tracked words dict
-    await ctx.response.send_message(c.trackWord(ctx,word,response), ephemeral=True)
+    #await ctx.response.send_message(#c.trackWord(ctx,word,response), ephemeral=True)
+    pass
 
 @bot.tree.command(name="untrack", description="Untrack a word, if it exists")
 @discord.ext.commands.has_permissions(manage_guild=True)
 @discord.app_commands.describe(word = "Word to untrack")
 async def removeWord(ctx: discord.Interaction, word: str): # Removes a word from the tracked words dict
-    await ctx.response.send_message(c.untrackWord(ctx,word), ephemeral=True)
+    #await ctx.response.send_message(#c.untrackWord(ctx,word), ephemeral=True)
+    pass
 
 
 
@@ -125,9 +131,9 @@ def run(token, pk1, docker: bool=False):
 
     handler.doRollover()
     logger.info("Attempting to start bot...")
-    c.docker = docker
-    c.inDocker(docker)
-    c.loadStats(pk1)
+    #c.docker = docker
+    #c.inDocker(docker)
+    #c.loadStats(pk1)
     bot.run(token=token, reconnect=True)
 
 
@@ -136,7 +142,7 @@ def run(token, pk1, docker: bool=False):
 def stop(sig = None, frame = None):
     
     logger.warning("Stopping Gracefully")
-    c.saveStats()
+    #c.saveStats()
     logger.critical("Exiting Program")
     sys.exit(0)
 
