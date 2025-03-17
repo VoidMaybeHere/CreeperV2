@@ -1,17 +1,13 @@
 from FileHandler import pkFileHandler as FileHandler
 import logging
-from pathlib import Path
 import discord
 
 class StatHandler:
-    def __init__(self, logFileName:str = __name__, docker:bool = False):
+    def __init__(self, docker:bool = False):
         
-        if not docker:
-            self._logFile = "./log/"+logFileName
-            Path("./log").mkdir(parents=True, exist_ok=True)
-        else:
-            self._logFile = "/data/log/"+logFileName
-            Path("/data/log").mkdir(parents=True, exist_ok=True)
+        
+        
+        
         
         self._generateLogger()
         
@@ -110,7 +106,7 @@ class StatHandler:
     def _generateLogger(self):
         Log = logging.getLogger("Stat Handler")
         Log.addHandler(logging.StreamHandler())
-        Log.addHandler(logging.FileHandler(filename=self._logFile, mode="a", encoding="utf-8").setFormatter(formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')))
+        Log.addHandler(logging.FileHandler(filename=self.__name__+".log", mode="a", encoding="utf-8").setFormatter(formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')))
         Log.setLevel(logging.INFO)
         Log.info("Logger Initalized")
         self._logger = Log

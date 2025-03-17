@@ -4,6 +4,7 @@ from StatHandler import StatHandler
 class MessageHandler:
     def __init__(self, statHandler: StatHandler):
         self.StatHandler = statHandler
+        
 
         
 
@@ -39,7 +40,7 @@ class MessageHandler:
     def _generateLogger(self):
         Log = logging.getLogger("Message Handler")
         Log.addHandler(logging.StreamHandler())
-        Log.addHandler(logging.FileHandler(filename=self._logFile, mode="a", encoding="utf-8"))
+        Log.addHandler(logging.FileHandler(filename=self.__name__+".log", mode="a", encoding="utf-8"))
         Log.setLevel(logging.INFO)
         Log.info("Logger Initalized")
         self._logger = Log
