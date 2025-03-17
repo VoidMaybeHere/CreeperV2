@@ -1,9 +1,11 @@
 import discord, logging
 from StatHandler import StatHandler
+import logHandler
 
-class MessageHandler:
+class MessageHandler(logHandler.logHandler):
     def __init__(self, statHandler: StatHandler):
         self.StatHandler = statHandler
+        self._logger = super().genLogger(self.__name__)
         
 
         
@@ -37,11 +39,5 @@ class MessageHandler:
 
     
 
-    def _generateLogger(self):
-        Log = logging.getLogger("Message Handler")
-        Log.addHandler(logging.StreamHandler())
-        Log.addHandler(logging.FileHandler(filename=self.__name__+".log", mode="a", encoding="utf-8"))
-        Log.setLevel(logging.INFO)
-        Log.info("Logger Initalized")
-        self._logger = Log
+
 
