@@ -11,6 +11,7 @@ class logHandler:
         
         handler = logging.handlers.RotatingFileHandler(
             filename=logDir,
+            mode='wb',
             encoding='utf-8',
             maxBytes=32 * 1024 * 1024,  # 32 MiB
             backupCount=5,  # Rotate through 5 files

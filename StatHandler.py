@@ -7,7 +7,7 @@ class StatHandler(logHandler.logHandler):
     def __init__(self, docker:bool = False):
         
         
-        self._logger = super().genLogger(self.__name__)
+        self._logger = super().genLogger(self.__class__.__name__)
         
         
         

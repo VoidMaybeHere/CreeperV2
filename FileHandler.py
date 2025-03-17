@@ -11,7 +11,7 @@ class pkFileHandler(logHandler.logHandler):
             
         
             
-        self._logger = super().genLogger(self.__name__)
+        self._logger = super().genLogger(self.__class__.__name__)
         self._loadData()
         self._logger.info("File Handler succesfully got data")
         self._logger.debug(self._data)
