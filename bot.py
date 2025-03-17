@@ -46,8 +46,6 @@ intents.guilds = True
 
 bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
 
-stats = StatHandler()
-messages = MessageHandler(stats)
 
 
 @bot.event    
@@ -63,7 +61,7 @@ async def on_ready():
     
 
 
-@bot.listen('on_message')
+'''@bot.listen('on_message')
 async def messageHandler(message: discord.Message):
     
     if message.author == bot.user or message.author.bot == True: #check if message was sent by a bot or self
@@ -121,15 +119,19 @@ async def addWord(ctx: discord.Interaction, word: str, response: str=None): # Ad
 async def removeWord(ctx: discord.Interaction, word: str): # Removes a word from the tracked words dict
     #await ctx.response.send_message(#c.untrackWord(ctx,word), ephemeral=True)
     pass
+'''
 
 
 
 
 
-
-def run(token, pk1, docker: bool=False):
-
-    handler.doRollover()
+def run(token, runtimeArgs):
+    global sHandle
+    sHandle = StatHandler()
+    
+    global mHandle
+    mHandle = MessageHandler(sHandle)
+    
     logger.info("Attempting to start bot...")
     #c.docker = docker
     #c.inDocker(docker)
