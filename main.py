@@ -1,12 +1,9 @@
 from bot import run
 import argparse
-import pickle
 import os
 from pathlib import Path
 
-defaultFile = "stats.pk1"
-dockerPath = "./data/"
-Path("./data/log").mkdir(parents=True, exist_ok=True)
+
 
 def fail(error):                                                                                                        #Error ""Handling""
     print(error)    
@@ -24,7 +21,8 @@ def runningInDocker():
     
 
 def main(token: str):
-    run(token, loadStats(runningInDocker()), runningInDocker())                                                                 #Run bot with token and stats
+    Path("./data/log").mkdir(parents=True, exist_ok=True)
+    run(token, args)                                                                 #Run bot with token and stats
 
 parser = argparse.ArgumentParser("main.py") 
 parser.add_argument("-d", help="Set true if running in a docker container", type=bool, required=False)
@@ -32,10 +30,8 @@ parser.add_argument("-t", help="Token of your discord bot, overrides token set i
 args = parser.parse_args()                                                                                              #Parse commandline arguments
 
 if args.t == None:
-    try:
-        token = getTokenFromEnv()
-    except Exception as e:
-        token = getTokenFromFile()                                                                                                  #Get token from token.txt
+    token = getTokenFromEnv()
+                                                                                               #Get token from token.txt
 else:                                                                                                                   #Format token string
     token = args.t
     token = token.strip()
