@@ -45,8 +45,15 @@ class pkFileHandler(logHandler.logHandler):
                 data = pk.load(file)
                 file.close()
                 self._data = data
+                return
+        except FileNotFoundError as fe:
+            with open(self._dataFile, "a") as file:
+                file.close()
+                self._logger.warning("No file found, new file created continuing with empty dict")
+                self._data = {}
         except Exception as e:
             self._logger.error(f"Error loading data from {self._dataFile} due to: {e}")
+            self.data = {}
         
         if data != dict() and data != None:
             self._logger.critical(f"Stats File corrupted, terminating program")
@@ -54,8 +61,9 @@ class pkFileHandler(logHandler.logHandler):
         else:
             self._logger.warning("Empty stats file, continuing with empty dict")
             self._data = {}
+            return
         
-        self._logger.critical("File handler really fucked up in _loadData")
+        self._logger.critical("File handler really fucked up in _loadData data ="+data)
         exit(300)    
         
 
