@@ -5,7 +5,7 @@ import logHandler
 class MessageHandler(logHandler.logHandler):
     def __init__(self, statHandler: StatHandler):
         self.StatHandler = statHandler
-        self._logger = super().genLogger(self.__name__)
+        self._logger = super().genLogger(self.__class__.__name__)
         
 
         
