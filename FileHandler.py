@@ -7,16 +7,10 @@ from pathlib import Path
 class pkFileHandler:
     
     def __init__(self, fileName="stats.pk1", logFileName = "FileHandler.log", docker: bool=False):
-        if not docker:
-            self._dataFile = "./data/"+fileName
-            self._logFile = "./log/"+logFileName
+        self._dataFile = "./data/"+fileName
+        self._logFile = "./log/"+logFileName
             
-            Path("./data").mkdir(parents=True, exist_ok=True)
-            Path("./log").mkdir(parents=True, exist_ok=True)
-        else:
-            self._dataFile = "/data/"+fileName
-            self._logFile = "/data/log/"+logFileName
-            Path("/data/log").mkdir(parents=True, exist_ok=True)
+        Path("./data/log").mkdir(parents=True, exist_ok=True)
             
         self._generateLogger()
         self._loadData()
