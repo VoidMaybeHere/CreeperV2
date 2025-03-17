@@ -16,10 +16,23 @@ class logHandler:
             maxBytes=32 * 1024 * 1024,  # 32 MiB
             backupCount=5,  # Rotate through 5 files
             )
+        handler.setLevel(logging.DEBUG)
+        formatter = logging.Formatter(
+            '[{asctime}] [{levelname:<8}] {name}: {message}',
+            dt_fmt,
+            style='{'
+            )
         
-        Log.addHandler(logging.StreamHandler().setFormatter(formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')))
-        Log.addHandler(handler.setFormatter(formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')))
+        handler.setFormatter(formatter)
+        Log.addHandler(handler)
+        
+        handler = logging.StreamHandler()
+        handler.setLevel(logging.INFO)
+        handler.setFormatter(logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{'))
+        
+        Log.addHandler(handler)
+        
         Log.setLevel(logging.INFO)
         Log.info(logName+" Logger Initalized")
-        self._logger = Log
-        
+        return Log
+
