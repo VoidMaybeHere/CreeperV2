@@ -104,7 +104,7 @@ async def getStats(ctx : discord.Interaction, user: discord.User=None, word: str
     word = word.lower()
     await ctx.response.send_message(f"{user.mention} has said {word} {c.getStat(ctx.guild, user, word)} times.", ephemeral=True)
     
-@bot.tree.command(name="track", description="Track a word and gove a response")
+@bot.tree.command(name="track", description="Track a word and give a response")
 @discord.ext.commands.has_permissions(manage_guild=True)
 @discord.app_commands.describe(word = "Word to track", response = "Response to give, if any")
 async def addWord(ctx: discord.Interaction, word: str, response: str=None): # Adds a word to the tracked words dict
