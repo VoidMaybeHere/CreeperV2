@@ -47,6 +47,7 @@ intents.guilds = True
 
 bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
 
+import CommandHandler #Import command handler after bot is created to avoid circular imports
 
 
 @bot.event    
