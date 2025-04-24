@@ -62,13 +62,17 @@ async def on_ready():
     
 
 
-'''@bot.listen('on_message')
+@bot.listen('on_message')
 async def messageHandler(message: discord.Message):
     
     if message.author == bot.user or message.author.bot == True: #check if message was sent by a bot or self
         return None
     
+    reply = mHandle.containsTrackedWord(message)
+    if reply != False:
+        await message.reply(reply)
     
+''' 
     if "creeper" in message.content.lower():
         reply = ""
         for word in message.content.lower().split():
@@ -82,10 +86,8 @@ async def messageHandler(message: discord.Message):
         if message.author.id == 341767947309678603: #my id
             #await message.author.send(await #c.bypass(message))
             return
-            
-    reply = messages.containsTrackedWord(message)
-    if reply != False:
-        await message.reply(reply)
+            '''
+    
 
 
 
@@ -120,7 +122,7 @@ async def addWord(ctx: discord.Interaction, word: str, response: str=None): # Ad
 async def removeWord(ctx: discord.Interaction, word: str): # Removes a word from the tracked words dict
     #await ctx.response.send_message(#c.untrackWord(ctx,word), ephemeral=True)
     pass
-'''
+
 
 
 
