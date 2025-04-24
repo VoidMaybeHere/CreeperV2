@@ -2,7 +2,13 @@ import logging
 import logging.handlers
 
 class logHandler:
+    
+    def getFormatter(self):
+        discordLogger = logging.getLogger('discord')
+        return discordLogger.handlers[-1].formatter
+    
     def genLogger(self, logName, logger=None):
+        
         if logger == None:
             logger = logName
         logDir = "./data/log/"+logName+".log"
@@ -26,9 +32,11 @@ class logHandler:
         handler.setFormatter(formatter)
         Log.addHandler(handler)
         
+        del handler
+        
         handler = logging.StreamHandler()
         handler.setLevel(logging.INFO)
-        handler.setFormatter(logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{'))
+        handler.setFormatter(self.getFormatter())
         
         Log.addHandler(handler)
         
