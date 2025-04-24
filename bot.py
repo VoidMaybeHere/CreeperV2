@@ -123,6 +123,10 @@ def stop(sig = None, frame = None):
     sHandle._fileHandler.save(sHandle.stats)
     logger.critical("Exiting Program")
     sys.exit(0)
-
+    
+def term(sig = None, frame = None):
+    logger.fatal("Terminating")
+    sys.exit(1)
+    
 signal.signal(signal.SIGINT, stop) #CTRL + C Handler
-signal.signal(signal.SIGTERM, stop) #SIGTERM Handler
+signal.signal(signal.SIGTERM, term) #SIGTERM Handler
