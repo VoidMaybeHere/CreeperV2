@@ -147,7 +147,7 @@ def run(token, runtimeArgs):
 def stop(sig = None, frame = None):
     
     logger.warning("Stopping Gracefully")
-    #c.saveStats()
+    sHandle._fileHandler.save(sHandle.stats)
     logger.critical("Exiting Program")
     sys.exit(0)
 
