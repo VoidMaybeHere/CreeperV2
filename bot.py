@@ -51,7 +51,7 @@ bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
 
 @bot.event    
 async def on_ready():
-    logger.info("Current pid: " + str(os.getpid()))
+    logger.info(f"Current pid: {str(os.getpid())}")
     await bot.tree.sync()
     logger.info("Command Tree Synced")
     logger.info(f"Bot is Ready! Starting Services. Logged in as {bot.user.name} - {bot.user.id}")
