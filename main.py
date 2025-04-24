@@ -2,6 +2,7 @@ from bot import run
 import argparse
 import os
 from pathlib import Path
+from arguments import args #Import commandline arguments namespace as args
 
 
 
@@ -23,11 +24,6 @@ def runningInDocker():
 def main(token: str):
     Path("./data/log").mkdir(parents=True, exist_ok=True)
     run(token, args)   #Run bot with token and runtime args
-
-parser = argparse.ArgumentParser("main.py") 
-parser.add_argument("-d", help="Set true if running in a docker container", type=bool, required=False)
-parser.add_argument("-t", help="Token of your discord bot, overrides token set in token.txt", type=str, required=False) #Token override via -t
-args = parser.parse_args()                                                                                              #Parse commandline arguments
 
 if args.t == None:
     token = getTokenFromEnv()
