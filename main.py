@@ -22,7 +22,7 @@ def runningInDocker():
 
 def main(token: str):
     Path("./data/log").mkdir(parents=True, exist_ok=True)
-    run(token, args)                                                                 #Run bot with token and stats
+    run(token, args)   #Run bot with token and runtime args
 
 parser = argparse.ArgumentParser("main.py") 
 parser.add_argument("-d", help="Set true if running in a docker container", type=bool, required=False)
