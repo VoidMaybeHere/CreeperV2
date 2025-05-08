@@ -5,12 +5,11 @@ import logging.handlers
 
 
 class logHandler:
-    
-    def __call__(self, logname):
-        return self.genLogger(logname) 
-    
-    def getFormatter(self):
+
+    def getFormatter(self=None):
         discordLogger = logging.getLogger('discord')
+        if discordLogger == None:
+            raise RuntimeError("Discord logger not found")
         return discordLogger.handlers[-1].formatter
     
     def genLogger(self, logName, logger=None):
@@ -51,10 +50,4 @@ class logHandler:
         return Log
 
 
-'''class singletonLogHandler(logHandler):
-    _instances = {}
-    def __call__(self, logname):
-        if self not in self._instances:
-            self._instances[self] = super().__call__(logname)
-        return self._instances[self]'''
         
