@@ -7,6 +7,7 @@ from logHandler import logHandler
 stats = {}
 docker = False
 dockerPath = "./data/"
+commandLibLogger = logHandler.genLogger(logHandler, logName="CommandLibrary") #Initialize logger
 
 def inDocker(tDocker: bool): # Set docker variable to true if running in docker
     global docker
@@ -21,7 +22,7 @@ def getStat(guild: discord.Guild, user: discord.User, word: str): # Get a specif
         stat = 0
     return stat
 
-def getAllStats(guild: discord.Guild, user: discord.User, logger: logging.Logger): # Get all stats for a user in a server
+def getAllStats(guild: discord.Guild, user: discord.User, logger: logging.Logger=commandLibLogger): # Get all stats for a user in a server
     guild = f"{guild.id}"
     user = f"{user.id}"
     userStatsString = ""
@@ -34,7 +35,7 @@ def getAllStats(guild: discord.Guild, user: discord.User, logger: logging.Logger
         userStatsString = "No stats found"
     return userStatsString
 
-def getServerStats(guild: discord.Guild, logger: logging.Logger):# Get combined stats for all users in a server
+def getServerStats(guild: discord.Guild, logger: logging.Logger=commandLibLogger):# Get combined stats for all users in a server
     guild = f"{guild.id}"
     serverStatsString = ""
     try:
@@ -66,7 +67,7 @@ def loadStats(pk1): # Transfer stats from bot.py to commandLibrary.py
     stats = pk1
 
 
-def saveStats(logger: logging.Logger): # Save stats to stats.pk1
+def saveStats(logger: logging.Logger=commandLibLogger): # Save stats to stats.pk1
     if docker:
         file = "./data/stats.pk1"
         Path(dockerPath).mkdir(parents=True, exist_ok=True)
@@ -80,7 +81,7 @@ def saveStats(logger: logging.Logger): # Save stats to stats.pk1
         f.close()
     logger.info("Stats written to pickle file")
         
-async def bypass(message: discord.Message, logger: logging.Logger): # Bypass mute/deafen and return a string 
+async def bypass(message: discord.Message, logger: logging.Logger=commandLibLogger): # Bypass mute/deafen and return a string 
     user = message.author
     rString = "Error bypassing "
     error = False
@@ -105,7 +106,7 @@ async def bypass(message: discord.Message, logger: logging.Logger): # Bypass mut
     await message.delete()
     return "Success"
 
-def trackWord(ctx: discord.Interaction, word: str, response: str, logger: logging.Logger): # Add word and response to tracked words dict (Stats)
+def trackWord(ctx: discord.Interaction, word: str, response: str, logger: logging.Logger=commandLibLogger): # Add word and response to tracked words dict (Stats)
     gid = f"{ctx.guild.id}"
     word = word.lower()
     if response == None:
@@ -146,7 +147,7 @@ def untrackWord(ctx: discord.Interaction, word: str, logger: logging.Logger): # 
     logger.info(f"Word [{word}] removed from tracked words dict in server {gid}")
     return f"Word [{word}] removed from tracked words dict in server {gid}"
         
-def respondToWord(message: discord.Message, logger: logging.Logger): # Find a tracked word in a message and return the response if there is one in stats
+def respondToWord(message: discord.Message, logger: logging.Logger=commandLibLogger): # Find a tracked word in a message and return the response if there is one in stats
     trackedWords = getTrackedWords(message.guild.id)
     messageTextLowerList = message.content.lower().split()
     if trackedWords == {}:
@@ -163,7 +164,7 @@ def respondToWord(message: discord.Message, logger: logging.Logger): # Find a tr
 
     return response
 
-def getTrackedWords(gid: int, logger: logging.Logger): # Get the words from the "Words" entry from stats[GuildID]
+def getTrackedWords(gid: int, logger: logging.Logger=commandLibLogger): # Get the words from the "Words" entry from stats[GuildID]
     gid = f"{gid}"
     try:
         return stats[f"{gid}"]["Words"]
@@ -175,7 +176,7 @@ def getTrackedWords(gid: int, logger: logging.Logger): # Get the words from the 
         logger.debug(f"Error getting tracked words: {e}")
         return {}
     
-def isTrackedWord(message: discord.Message, logger: logging.Logger): # Check if a message contains a tracked word
+def isTrackedWord(message: discord.Message, logger: logging.Logger=commandLibLogger): # Check if a message contains a tracked word
     trackedWords = getTrackedWords(message.guild.id)
     if trackedWords == {}:
         return False
