@@ -1,7 +1,13 @@
 import logging
 import logging.handlers
 
+
+
+
 class logHandler:
+    
+    def __call__(self, logname):
+        return self.genLogger(logname) 
     
     def getFormatter(self):
         discordLogger = logging.getLogger('discord')
@@ -44,3 +50,11 @@ class logHandler:
         Log.info(logName+" Logger Initalized")
         return Log
 
+
+'''class singletonLogHandler(logHandler):
+    _instances = {}
+    def __call__(self, logname):
+        if self not in self._instances:
+            self._instances[self] = super().__call__(logname)
+        return self._instances[self]'''
+        
