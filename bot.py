@@ -91,7 +91,7 @@ async def messageHandler(message: discord.Message):
             return
             '''
 
-def run(token, runtimeArgs):
+def run(token, runtimeArgs, logger):
     global sHandle
     sHandle = StatHandler()
     
