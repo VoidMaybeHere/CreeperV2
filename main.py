@@ -1,5 +1,4 @@
 from bot import run
-import argparse
 import os
 from pathlib import Path
 from arguments import args #Import commandline arguments namespace as args
@@ -33,6 +32,7 @@ else:                                                                           
     token = token.strip()
     
 main(token)                                                                                                             #Run bot with token
+
 
 
 
