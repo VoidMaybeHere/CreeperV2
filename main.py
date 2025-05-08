@@ -2,8 +2,10 @@ from bot import run
 import os
 from pathlib import Path
 from arguments import args #Import commandline arguments namespace as args
+from logHandler import logHandler
 
 
+logger = logHandler.genLogger(logHandler, logName="Main") #Initialize logger
 
 def fail(error):                                                                                                        #Error ""Handling""
     print(error)    
@@ -20,9 +22,9 @@ def runningInDocker():
     return args.d
     
 
-def main(token: str):
+def main(token: str, logger):
     Path("./data/log").mkdir(parents=True, exist_ok=True)
-    run(token, args)   #Run bot with token and runtime args
+    run(token, args, logger)   #Run bot with token and runtime args
 
 if args.t == None:
     token = getTokenFromEnv()
@@ -31,7 +33,7 @@ else:                                                                           
     token = args.t
     token = token.strip()
     
-main(token)                                                                                                             #Run bot with token
+main(token,logger)                                                                                                             #Run bot with token
 
 
 
