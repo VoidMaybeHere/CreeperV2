@@ -1,10 +1,10 @@
 import discord, logging, pickle 
 from pathlib import Path
+from logHandler import logHandler
 
 
 
 stats = {}
-logger = None
 docker = False
 dockerPath = "./data/"
 
@@ -12,16 +12,16 @@ def inDocker(tDocker: bool): # Set docker variable to true if running in docker
     global docker
     docker = tDocker
 
-'''def getStat(guild: discord.Guild, user: discord.User, word: str): # Get a specific stat for a user in a server
+def getStat(guild: discord.Guild, user: discord.User, word: str): # Get a specific stat for a user in a server
     guild = f"{guild.id}"
     user = f"{user.id}"
     try:
         stat = stats[guild][user][word]
     except: 
         stat = 0
-    return stat'''
+    return stat
 
-'''def getAllStats(guild: discord.Guild, user: discord.User): # Get all stats for a user in a server
+def getAllStats(guild: discord.Guild, user: discord.User, logger: logging.Logger): # Get all stats for a user in a server
     guild = f"{guild.id}"
     user = f"{user.id}"
     userStatsString = ""
@@ -32,9 +32,9 @@ def inDocker(tDocker: bool): # Set docker variable to true if running in docker
     except Exception as e:
         logger.error(f"Error getting all stats: {e}")
         userStatsString = "No stats found"
-    return userStatsString'''
+    return userStatsString
 
-'''def getServerStats(guild: discord.Guild):# Get combined stats for all users in a server
+def getServerStats(guild: discord.Guild, logger: logging.Logger):# Get combined stats for all users in a server
     guild = f"{guild.id}"
     serverStatsString = ""
     try:
@@ -57,19 +57,16 @@ def inDocker(tDocker: bool): # Set docker variable to true if running in docker
     if serverStatsString == "" or serverStatsString == None:
         logger.error(f"Server stats string is empty, \"{serverStatsString}\"")
         serverStatsString = "No stats recorded in server and bot really fucked up"
-    return serverStatsString'''
+    return serverStatsString
 
 
 
-'''def loadStats(pk1): # Transfer stats from bot.py to commandLibrary.py
+def loadStats(pk1): # Transfer stats from bot.py to commandLibrary.py
     global stats
-    stats = pk1'''
+    stats = pk1
 
-'''def getLogger(tlogger: logging.Logger): # Get same logger from bot.py 
-    global logger
-    logger = tlogger'''
 
-'''def saveStats(): # Save stats to stats.pk1
+def saveStats(logger: logging.Logger): # Save stats to stats.pk1
     if docker:
         file = "./data/stats.pk1"
         Path(dockerPath).mkdir(parents=True, exist_ok=True)
@@ -81,9 +78,9 @@ def inDocker(tDocker: bool): # Set docker variable to true if running in docker
         pickle.dump(stats, f)
         logger.info(stats)
         f.close()
-    logger.info("Stats written to pickle file")'''
+    logger.info("Stats written to pickle file")
         
-async def bypass(message: discord.Message): # Bypass mute/deafen and return a string 
+async def bypass(message: discord.Message, logger: logging.Logger): # Bypass mute/deafen and return a string 
     user = message.author
     rString = "Error bypassing "
     error = False
@@ -108,7 +105,7 @@ async def bypass(message: discord.Message): # Bypass mute/deafen and return a st
     await message.delete()
     return "Success"
 
-def trackWord(ctx: discord.Interaction, word: str, response: str): # Add word and response to tracked words dict (Stats)
+def trackWord(ctx: discord.Interaction, word: str, response: str, logger: logging.Logger): # Add word and response to tracked words dict (Stats)
     gid = f"{ctx.guild.id}"
     word = word.lower()
     if response == None:
@@ -125,7 +122,7 @@ def trackWord(ctx: discord.Interaction, word: str, response: str): # Add word an
     logger.info(f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}")
     return f"Word [{word}] with response [{response}] added to tracked words dict in server {gid}"
 
-def untrackWord(ctx: discord.Interaction, word: str): # Remove word from tracked words dict (Stats)
+def untrackWord(ctx: discord.Interaction, word: str, logger: logging.Logger): # Remove word from tracked words dict (Stats)
     gid = f"{ctx.guild.id}"
     word = word.lower()
     try:
@@ -149,7 +146,7 @@ def untrackWord(ctx: discord.Interaction, word: str): # Remove word from tracked
     logger.info(f"Word [{word}] removed from tracked words dict in server {gid}")
     return f"Word [{word}] removed from tracked words dict in server {gid}"
         
-def respondToWord(message: discord.Message): # Find a tracked word in a message and return the response if there is one in stats
+def respondToWord(message: discord.Message, logger: logging.Logger): # Find a tracked word in a message and return the response if there is one in stats
     trackedWords = getTrackedWords(message.guild.id)
     messageTextLowerList = message.content.lower().split()
     if trackedWords == {}:
@@ -166,7 +163,7 @@ def respondToWord(message: discord.Message): # Find a tracked word in a message 
 
     return response
 
-def getTrackedWords(gid: int): # Get the words from the "Words" entry from stats[GuildID]
+def getTrackedWords(gid: int, logger: logging.Logger): # Get the words from the "Words" entry from stats[GuildID]
     gid = f"{gid}"
     try:
         return stats[f"{gid}"]["Words"]
@@ -178,7 +175,7 @@ def getTrackedWords(gid: int): # Get the words from the "Words" entry from stats
         logger.debug(f"Error getting tracked words: {e}")
         return {}
     
-def isTrackedWord(message: discord.Message): # Check if a message contains a tracked word
+def isTrackedWord(message: discord.Message, logger: logging.Logger): # Check if a message contains a tracked word
     trackedWords = getTrackedWords(message.guild.id)
     if trackedWords == {}:
         return False
