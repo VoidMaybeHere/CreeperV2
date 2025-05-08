@@ -2,15 +2,11 @@ import discord, discord.ext
 import discord.ext.commands, commandLibrary as c
 from MessageHandler import MessageHandler
 from StatHandler import StatHandler
+
 #logging
 import logging, logging.handlers
 #CTRL + C Handling
 import signal, sys, os
-
-
-
-
-
 
 
 
@@ -31,7 +27,8 @@ logger.addHandler(handler)
 
 logger.info("Logger setup")
 
-#c.getLogger(logger) #get logger into commandLibrary
+import CommandHandler
+
 
 
 
@@ -47,18 +44,22 @@ intents.guilds = True
 
 bot = discord.ext.commands.Bot(intents=intents, command_prefix='?')
 
-import CommandHandler #Import command handler after bot is created to avoid circular imports
+CommandHandler.register_commands(bot)  # Register commands
+
 
 
 @bot.event    
 async def on_ready():
     logger.info(f"Current pid: {str(os.getpid())}")
-    await bot.tree.sync()
+    
     logger.info("Command Tree Synced")
     logger.info(f"Bot is Ready! Starting Services. Logged in as {bot.user.name} - {bot.user.id}")
     
     await bot.change_presence(activity=discord.CustomActivity(name="aw man"))
     logger.info("Presence set")
+
+    
+    await bot.tree.sync()
 
     
     
@@ -89,18 +90,6 @@ async def messageHandler(message: discord.Message):
             #await message.author.send(await #c.bypass(message))
             return
             '''
-    
-
-
-
-
-
-
-
-
-
-
-
 
 def run(token, runtimeArgs):
     global sHandle
